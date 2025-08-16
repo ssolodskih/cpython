@@ -1,0 +1,3 @@
+import builtins
+from _typed_def_runtime import __typed_def_validator__
+builtins.__typed_def_validator__ = __typed_def_validator__

@@ -127,7 +127,7 @@ simple_stmt[stmt_ty] (memo):
     | &'nonlocal' nonlocal_stmt
 
 compound_stmt[stmt_ty]:
-    | &('def' | '@' | 'async') function_def
+    | &('def' | '@' | 'async' | "fn") function_def
     | &'if' if_stmt
     | &('class' | '@') class_def
     | &('with' | 'async') with_stmt
@@ -265,6 +265,8 @@ class_def_raw[stmt_ty]:
 function_def[stmt_ty]:
     | d=decorators f=function_def_raw { _PyPegen_function_def_decorators(p, d, f) }
     | function_def_raw
+    | d=decorators f=typed_function_def_raw { _PyPegen_function_def_decorators(p, d, f) }
+    | typed_function_def_raw
 
 function_def_raw[stmt_ty]:
     | invalid_def_raw
@@ -281,6 +283,35 @@ function_def_raw[stmt_ty]:
                             (params) ? params : CHECK(arguments_ty, _PyPegen_empty_arguments(p)),
                             b, NULL, a, NEW_TYPE_COMMENT(p, tc), t, EXTRA)
         ) }
+
+typed_function_def_raw[stmt_ty]:
+    | invalid_def_raw
+    | "fn" n=NAME t=[type_params] '(' params=[params] ')' a=['->' z=expression { z }] ':' tc=[func_type_comment] b=block {
+    _PyPegen_function_def_decorators(
+        p,
+        (asdl_expr_seq*)_PyPegen_singleton_seq(
+            p,
+            _PyAST_Name(CHECK(identifier, _PyPegen_new_identifier(p, "__typed_def_validator__")), Load, EXTRA)
+        ),
+        _PyAST_FunctionDef(
+            NAME->v.Name.id,
+            (params) ? params : CHECK(arguments_ty, _PyPegen_empty_arguments(p)),
+            block, NULL, a, NEW_TYPE_COMMENT(p, tc), t, EXTRA)
+    )}
+    | 'async' "fn" n=NAME t=[type_params] '(' params=[params] ')' a=['->' z=expression { z }] ':' tc=[func_type_comment] b=block {
+        _PyPegen_function_def_decorators(
+                p,
+                (asdl_expr_seq*)_PyPegen_singleton_seq(
+                    p,
+                    _PyAST_Name(CHECK(identifier, _PyPegen_new_identifier(p, "__typed_def_validator__")), Load, EXTRA)
+                ),
+                CHECK_VERSION(stmt_ty, 5, "Async functions are",
+                    _PyAST_AsyncFunctionDef(
+                        NAME->v.Name.id,
+                        (params) ? params : CHECK(arguments_ty, _PyPegen_empty_arguments(p)),
+                        block, NULL, a, NEW_TYPE_COMMENT(p, tc), t, EXTRA))
+        )
+    }
 
 # Function parameters
 # -------------------
