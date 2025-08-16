@@ -4776,7 +4776,7 @@ typed_function_def_raw_rule(Parser *p)
             UNUSED(_end_lineno); // Only used by EXTRA macro
             int _end_col_offset = _token->end_col_offset;
             UNUSED(_end_col_offset); // Only used by EXTRA macro
-            _res = _PyPegen_function_def_decorators ( p , ( asdl_expr_seq* ) _PyPegen_singleton_seq ( p , _PyAST_Name ( CHECK ( identifier , _PyPegen_new_identifier ( p , "__typed_def_validator__" ) ) , Load , EXTRA ) ) , _PyAST_FunctionDef ( NAME -> v . Name . id , ( params ) ? params : CHECK ( arguments_ty , _PyPegen_empty_arguments ( p ) ) , block , NULL , a , NEW_TYPE_COMMENT ( p , tc ) , t , EXTRA ) );
+            _res = _PyPegen_function_def_decorators ( p , ( asdl_expr_seq* ) _PyPegen_singleton_seq ( p , CHECK ( expr_ty , _PyAST_Name ( CHECK ( identifier , _PyPegen_new_identifier ( p , "__typed_def_validator__" ) ) , Load , EXTRA ) ) ) , _PyAST_FunctionDef ( n -> v . Name . id , ( params ) ? params : CHECK ( arguments_ty , _PyPegen_empty_arguments ( p ) ) , b , NULL , a , NEW_TYPE_COMMENT ( p , tc ) , t , EXTRA ) );
             if (_res == NULL && PyErr_Occurred()) {
                 p->error_indicator = 1;
                 p->level--;
@@ -4839,7 +4839,7 @@ typed_function_def_raw_rule(Parser *p)
             UNUSED(_end_lineno); // Only used by EXTRA macro
             int _end_col_offset = _token->end_col_offset;
             UNUSED(_end_col_offset); // Only used by EXTRA macro
-            _res = _PyPegen_function_def_decorators ( p , ( asdl_expr_seq* ) _PyPegen_singleton_seq ( p , _PyAST_Name ( CHECK ( identifier , _PyPegen_new_identifier ( p , "__typed_def_validator__" ) ) , Load , EXTRA ) ) , CHECK_VERSION ( stmt_ty , 5 , "Async functions are" , _PyAST_AsyncFunctionDef ( NAME -> v . Name . id , ( params ) ? params : CHECK ( arguments_ty , _PyPegen_empty_arguments ( p ) ) , block , NULL , a , NEW_TYPE_COMMENT ( p , tc ) , t , EXTRA ) ) );
+            _res = _PyPegen_function_def_decorators ( p , ( asdl_expr_seq* ) _PyPegen_singleton_seq ( p , CHECK ( expr_ty , _PyAST_Name ( CHECK ( identifier , _PyPegen_new_identifier ( p , "__typed_def_validator__" ) ) , Load , EXTRA ) ) ) , CHECK ( stmt_ty , CHECK_VERSION ( stmt_ty , 5 , "Async functions are" , _PyAST_AsyncFunctionDef ( n -> v . Name . id , ( params ) ? params : CHECK ( arguments_ty , _PyPegen_empty_arguments ( p ) ) , b , NULL , a , NEW_TYPE_COMMENT ( p , tc ) , t , EXTRA ) ) ) );
             if (_res == NULL && PyErr_Occurred()) {
                 p->error_indicator = 1;
                 p->level--;
